@@ -6,11 +6,12 @@ Display_Usage() {
 
     echo "Usage: $0 [OPTIONS]"
     echo " Select Below Options:"
-    echo "  -c, --create     Create a new user account."
-    echo "  -d, --delete     Delete an existing user account."
-    echo "  -r, --reset      Reset password for an existing user account."
-    echo "  -l, --list       List all user accounts on the system."
-    echo "  -h, --help       Display this help and exit."
+    echo "  -c, --create       Create a new user account."
+    echo "  -d, --delete       Delete an existing user account."
+    echo "  -r, --reset        Reset password for an existing user account."
+    echo "  -l, --list         List all user accounts on the system."
+    echo "  -h, --help         Display this help and exit."
+    echo "  -b, --backup       Take backup of important files."
 }
 
 
@@ -75,6 +76,27 @@ List_Users() {
     awk -F':' '{ print $1 "(UID: " $3")" } ' /etc/passwd
 }
 
+
+#Function to create backup
+Create_Backup() {
+
+read -p "Please Enter Source Directory: " src
+read -p "Please Enter Destination Directory: " dst
+
+#Create Variable to give Current Date/Time
+curr_date=$(date "+%Y-%m-%d-%H-%M-%S")
+
+ 
+bkp_file="$dst"/backup_"$curr_date".tar.gz
+
+#Creating Backup file in destination directory
+tar -czf $bkp_file -P $src 
+
+echo "Backup Created Succesfully"
+
+}
+
+
 # Check if no arguments are provided or if the -h or --help option is given
 if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     Display_Usage
@@ -96,6 +118,9 @@ while [ $# -gt 0 ]; do
         -l|--list)
             List_Users
             ;;
+	-b|--backup)
+	    Create_Backup
+            ;; 	    
         *)
             echo "Error: Invalid option '$1'. Use '--help' to see available options."
             exit 1
