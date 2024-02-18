@@ -11,6 +11,7 @@ Display_Usage() {
     echo "  -r, --reset      Reset password for an existing user account."
     echo "  -l, --list       List all user accounts on the system."
     echo "  -h, --help       Display this help and exit."
+    echo "  -b, --backup     Take Backup of Directory."  
 }
 
 
@@ -66,7 +67,18 @@ Reset_Password() {
 	fi
 }
 
+Create_Backup() {
 
+	read -p "Please Enter the Directory which you need to take backup of: " src
+	read -p "Please Enter the Directory where you want to create backup: " dst
+
+	curr_date=$(date +%Y-%m-%d-%H-%M-%S)
+
+	bkp_file=$dst/backup_$curr_date.tar.gz
+
+	tar -cvf $bkp_file -P $src
+
+}
 
 
 # Function to list all user accounts on the system
@@ -96,7 +108,10 @@ while [ $# -gt 0 ]; do
         -l|--list)
             List_Users
             ;;
-        *)
+	-b|--backup)
+	    Create_Backup
+            ;;
+	    *)
             echo "Error: Invalid option '$1'. Use '--help' to see available options."
             exit 1
             ;;
